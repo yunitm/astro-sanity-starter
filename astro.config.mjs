@@ -1,22 +1,19 @@
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import sanity from '@sanity/astro';
-import { sanityConfig } from './src/utils/sanity-client';
+  import sanity from '@sanity/astro';
+  import tailwind from '@astrojs/tailwind';
+  import netlify from '@astrojs/netlify/functions';
 
-// https://astro.build/config
-export default defineConfig({
-    image: {
-        domains: ['cdn.sanity.io']
-    },
-    integrations: [sanity(sanityConfig)],
-    vite: {
-        plugins: [tailwindcss()],
-        server: {
-            hmr: { path: '/vite-hmr/' },
-            allowedHosts: ['.netlify.app']
-        }
-    },
-    server: {
-        port: 3000
-    }
-});
+  export default defineConfig({
+    output: 'server',
+    adapter: netlify(),
+    integrations: [
+      sanity({
+        projectId: '90fa7e4c-0afa-4df6-b841-f6f39e4dfb66',
+        dataset: 'production',
+        apiVersion: '2023-05-03',
+        useCdn: true,
+      }),
+      tailwind(),
+    ],
+    site: 'https://raksabuku.netlify.app',
+  });
